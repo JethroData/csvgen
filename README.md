@@ -1,3 +1,5 @@
+#csvgen
+
 csvgen generates csv files containing mock data that can be used to load as data sets
 
 Prerequisites:
