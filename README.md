@@ -21,14 +21,14 @@ Windows: csvgen.py <parameters>
 
 It accepts the following command line parameters:
 
--i <number of rows> -d <delimiter> -n <null string> -o <output file> <description file>
+-i number-of-rows -d delimiter -n null-string -o output-file description-file
 
 Where:
-<number of rows> - Number of rows to generate. Default = 1
-<delimiter> - The delimiter to use. Default = ‘,’
-<null string> - The string to use for NULL. Default = “” (empty string)
-<output file> - The full path of the output file. Default is standard output.
-<description file> - The full path of the description file.
+number-of-rows - Number of rows to generate. Default = 1
+delimiter - The delimiter to use. Default = ‘,’
+null-string - The string to use for NULL. Default = “” (empty string)
+output-file - The full path of the output file. Default is standard output.
+description-file - The full path of the description file.
 
 The description file describes the data to generate. Every line represents a different column.
 Every line starts with a type and then may have specific parameters.
