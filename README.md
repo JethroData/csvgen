@@ -25,9 +25,13 @@ It accepts the following command line parameters:
 
 Where:
 number-of-rows - Number of rows to generate. Default = 1
+
 delimiter - The delimiter to use. Default = ‘,’
+
 null-string - The string to use for NULL. Default = “” (empty string)
+
 output-file - The full path of the output file. Default is standard output.
+
 description-file - The full path of the description file.
 
 The description file describes the data to generate. Every line represents a different column.
