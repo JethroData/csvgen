@@ -41,7 +41,8 @@ The following is a description of all types:
 
 Row_number:
 	Description: Generates a unique row number for each row, starting at 1 or at the number provided as parameter
-	Parameters:  Start from, the number to start from, optional	
+	Parameters:  Start from, the number to start from, optional
+				 Prefix, the prefix to prepend to the number, optional
 	Example:     row_number 1000
 	
 boolean:
@@ -69,8 +70,9 @@ word:
 	Description: Generates a random (meaningless) word
 	Parameters:  min, the minimum number of syllables, mandatory
 		     max, the maximum number of syllables, mandatory
+			 Unique, the number of unique words to generate, optional
 		     Null %, the % of NULL values, 0-100, optional	
-	Example:     word 2 4 15
+	Example:     word 2 4 100 15
 	
 Number:
 	Description: Generates a whole or decimal number
