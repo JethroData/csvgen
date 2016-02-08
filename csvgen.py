@@ -10,6 +10,7 @@ import struct
 import sys, getopt
 import shlex
 import rstr
+from setuptools.package_index import unique_values
 
 
 
@@ -30,6 +31,8 @@ simple_types = ['boolean', 'gender', 'gender_abbrev', 'uuid', 'ip_address',]
 param_types = ['regex', 'fixed', 'list']
 range_types = ['word']
 format_types = ['number', 'date']
+
+max_buff_size = 1024 * 1024
   
 def gen_rownumber(start, row_number):
     return start + row_number
@@ -136,17 +139,24 @@ def read_description(filename):
                 userlists[num] = map(str.strip, items)
             desc.append(param)
         elif datatype in range_types:
-            if len(params) < 3:
+            if len(params) < 4:
                 sys.stderr.write("Error: Type " + datatype + " must have min and max parameters")
                 sys.exit(2)
             minrange = int(params[1])
             maxrange = int(params[2])
+            unique_values = 0
             if len(params) > 3:
-                nullp = int(params[3])
+                unique_values = int(params[3])
+            if len(params) > 4:
+                nullp = int(params[4])
                 
             desc.append(nullp)
             desc.append(minrange)
             desc.append(maxrange)
+            desc.append(unique_values)
+            if unique_values > 0:
+                userlists[num] = []
+                
         elif datatype in format_types:
             if len(params) < 4:
                 sys.stderr.write("Error: Type " + datatype + " must have 3 parameters")
@@ -174,6 +184,10 @@ def read_description(filename):
                 desc.append(int(params[1]))
             else:
                 desc.append(1)
+            if len(params) > 2:
+                desc.append(params[2])
+            else:
+                desc.append("")
             
         else:
             if len(params) > 1:
@@ -195,7 +209,7 @@ def generate_csv():
             if nullp > 0 and randint(0, 100) < nullp:
                 buff += nullstr
             elif datatype == 'row_number':
-                buff += str(gen_rownumber(desc[2], i))
+                buff += desc[3] + str(gen_rownumber(desc[2], i))
             elif datatype == 'boolean':
                 buff += gen_bool()
             elif datatype == 'uuid':
@@ -207,7 +221,17 @@ def generate_csv():
             elif datatype == 'fixed':
                 buff += desc[2]
             elif datatype == 'word':
-                buff += gen_word(desc[2], desc[3])
+                uv = desc[4]
+                if uv > 0:
+                    wlist = userlists[j - 1]
+                    if len(wlist) < uv:
+                        newword = gen_word(desc[2], desc[3])
+                        wlist.append(newword)
+                        buff += newword
+                    else:
+                        buff += gen_from_user_list(j - 1)
+                else: 
+                    buff += gen_word(desc[2], desc[3])
             elif datatype == 'number':
                 buff += str(gen_number(desc[2], desc[3], desc[4]))
             elif datatype == 'date':
@@ -220,8 +244,13 @@ def generate_csv():
                 buff += delimiter
             j += 1
         
-        sys.stdout.write(buff + '\n')
-        buff = ""
+        buff += '\n'
+        if len(buff) > max_buff_size:
+            sys.stdout.write(buff)
+            buff = ""
+            
+    if len(buff) > 0:
+        sys.stdout.write(buff)
         
 def main(argv):
     global rows, delimiter, nullstr
