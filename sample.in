@@ -1,11 +1,11 @@
-row_number 1000
+row_number 1000 customer_
 list '[red blue green]'
 number 14622000 14622224 0
-first_name 10
+first_name  100 10
 number 0 100 2 36
 fixed 2000
 regex 2015(0[1-9]|1[0-2])
 regex [A-Z0-9]{3,3}-[A-Z0-9]{3,3}
 date "01-01-2012 00:00:00" "12-31-2012 23:59:59" "%m-%d-%Y %H:%M:%S"
 date "05-27-2014" "06-30-2014" "%m-%d-%Y" 25
-word 2 4 10
+word 2 4 100 10

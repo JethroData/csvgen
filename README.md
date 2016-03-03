@@ -108,12 +108,12 @@ list:
 In addition to the above types, you can also generate a string from a custom list of string. For a given type, there ahould be a file <type>.csv in the data directory. The file should contain a list of values, each one on a separate line. One of these values will be picked randomly.
 The data directory already contains several type files, like first_name, last_name, state, country, etc. You can add new custom types by adding such a file to the data directory.
 To use a custom type, specify the following:
-<type-name> null%
-Where <type-name> is the name of the file with the .csv extension
+<type-name> unique null%
+Where <type-name> is the name of the file with the .csv extension and unique is the optionals number of unique values to generatel
 
 For example: 
 
-first_name  10
+first_name  20 10
 
 The zip file also contains a sample description file called sample.in.
 
