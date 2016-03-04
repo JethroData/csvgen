@@ -75,17 +75,21 @@ def load_list(name):
     lines = [line.rstrip('\n') for line in open('data/' + name + '.csv')]
     datalists[name] = lines
     
-def gen_from_list(name, unique_values, row_number):
+def gen_from_list(name, target_uv, actual_uv):
     global datalists
     data = datalists.get(name)
     if data == None:
         load_list(name)
         data = datalists.get(name)
     
-    if unique_values > 0 and row_number < unique_values and row_number < len(data):
-        return data[row_number % len(data)]
-    else:
+    if target_uv == 0 or target_uv > len(data):
         return data[randint(0, len(data) -1)]
+    else:
+        if target_uv > actual_uv:
+            return data[actual_uv]
+        else:
+            return data[randint(0, target_uv -1)]
+        
 
 def gen_from_user_list(num):
     global userlists
@@ -201,6 +205,7 @@ def read_description(filename):
                 nullp = int(params[2])
             desc.append(nullp)
             desc.append(unique_values)
+            desc.append(0)
         
         descriptions.append(desc)
         num += 1
@@ -247,7 +252,9 @@ def generate_csv():
             elif datatype == 'list':
                 buff += gen_from_user_list(j - 1)
             else:
-                buff += gen_from_list(datatype, desc[2], i) 
+                uv = desc[3]
+                buff += gen_from_list(datatype, desc[2], uv)
+                desc[3] = uv + 1
             if j < last:
                 buff += delimiter
             j += 1
