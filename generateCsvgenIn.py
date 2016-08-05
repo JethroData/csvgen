@@ -1,4 +1,5 @@
 import sys, getopt, re, csv
+from datetime import datetime, timedelta
 
 conststrings = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'hhh', 'iii', 'jjj']
 
@@ -67,9 +68,9 @@ def  writeNumericInput(outfile, nullp, distinct):
     outfile.write(line + "\n")
 
 def  writeTimestampInput(outfile, nullp, distinct):
-    yearstart = 1990
-    yearend = yearstart + distinct / 365 + 1
-    line = 'date "' + str(yearstart) + '-01-01" "' + str(yearend) + '-12-31" "%Y-%m-%d"'
+    dateend = datetime.now().strftime("%Y-%m-%d")
+    datestart = (datetime.now() - timedelta(days=distinct)).strftime("%Y-%m-%d")
+    line = 'date "' + datestart + '" "' + dateend + '"'
     if nullp > 0:
         line += ' ' + str(nullp)
     outfile.write(line + "\n")
