@@ -109,7 +109,7 @@ In addition to the above types, you can also generate a string from a custom lis
 The data directory already contains several type files, like first_name, last_name, state, country, etc. You can add new custom types by adding such a file to the data directory.
 To use a custom type, specify the following:
 <type-name> unique null%
-Where <type-name> is the name of the file with the .csv extension and unique is the optionals number of unique values to generatel
+Where <type-name> is the name of the file with the .csv extension and unique is the optional number of unique values to generate
 
 For example: 
 
