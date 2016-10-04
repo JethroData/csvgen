@@ -96,15 +96,54 @@ fixed:
 	Description: Generates a string provided as parameter
 	Parameters:  Fixed value, the string to generate, mandatory
 		     Null %, the % of NULL values, 0-100, optional	
-	Example:     Fixed hello 10
+	Example:     fixed hello 10
 	
 list:
 	Description: Picks a string from a list of values
 	Parameters:  List, list of values separated by a space enclosed by “[ ]” mandatory
 		     Null %, the % of NULL values, 0-100, optional	
-	Example:     List “[dog cat mouse]” 20
+	Example:     list “[dog cat mouse]” 20
 				 *** Note that you must enclose the list with quotes.
+				 
+func:
+	Description: Generates a value by executing a function on other generated values. The function should be sorounded by double quotes. 
+				 The other values are passed as parameters in the form '\n' where n is the column number starting at 1.
+				 The following functions are supported:
+				 substr(\n, start [,end])
+					Extracts a substring from the nth column from start position to (the optional) end position.
+					Example: substr(\2, 3, 5)
+				 
+				 concat(str1, str2)
+					Concatenates 2 strings. Each string can be either a value from a different column (\n) or a string.
+					Example: concat(\2, 'another string'), concat('hello ', \3)
+				 
+				 copy(\n)
+					Copies the value of another column.
+					Example: copy(\2)
+					
+				 replace(str, old, new)
+					Replaces all occurrences of old in str by new. All parameters can be either a value from a different column (\n) or a string.
+					Example: replace(\1, John, Joe)
+				
+				upper(\n), loawer(\n)
+					Converts all characters of a column value to upper/lower case.
+					Example: upper(\1), lower(\3)
+				
+				add(n1, n1) sub(n1, n1), mult(n1, n1), div(n1, n1), mod(n1, n1)
+					Execute the arithmetic operation on 2 numbers. The parameters can be either a value from a different column (\n) or a number.
+					Example: add(\1, 2), sub(5, \2), mult(\2, \3), div(\2, 10), mod(13, 12)
+				
+				
+				min(params), max(params), avg(params)
+					Calculates the minimum, maximum and average of the numeric parameters. The parameters can be either a value from a different column (\n) or a number.
+					Example: min(\1, \2, \3), max(\3, 10), avg(\2, \3, 7)
+					
+	Parameter:  The function to execute sorrounded by '"', mandatory.
+				Null %, the % of NULL values, 0-100, optional
+	Example:	func "substr(\2, 3, 5)"
+				func "add(\1, 2)" 25
 
+				
 In addition to the above types, you can also generate a string from a custom list of string. For a given type, there ahould be a file <type>.csv in the data directory. The file should contain a list of values, each one on a separate line. One of these values will be picked randomly.
 The data directory already contains several type files, like first_name, last_name, state, country, etc. You can add new custom types by adding such a file to the data directory.
 To use a custom type, specify the following:

@@ -122,6 +122,17 @@ def gen_ipaddress():
 def gen_regex(regex):
     return rstr.xeger(regex)
 
+def parseFunc(func):
+    funcName = func[0:func.index('(')]
+    if funcName not in ['substr', 'concat', 'copy', 'replace', 'upper', 'lower', 'add', 'sub', 'mult', 'div', 'mod', 'min', 'max', 'avg']:
+        sys.stderr.write("Error: Unsupported function name " + funcName)
+        sys.exit(2)
+        
+    params = func[func.index('(') + 1:func.index(')')].split(',')
+    params = [x.strip() for x in params]
+    params = [x.strip("'") for x in params]
+    return [funcName] + params
+    
 def read_description(filename):
     global descriptions, userlists, row_number_num
     num = 0
@@ -196,7 +207,16 @@ def read_description(filename):
                 desc.append(params[2])
             else:
                 desc.append("")
-            
+        elif datatype == 'func':
+            if len(params) < 1:
+                sys.stderr.write("Error: Missing function")
+                sys.exit(2)
+                
+            f = parseFunc(params[1])
+            if len(params) > 2:
+                nullp = int(params[2])    
+            desc.append(nullp)
+            desc.append(f)
         else:
             unique_values = 0
             if len(params) > 1:
@@ -209,57 +229,147 @@ def read_description(filename):
         
         descriptions.append(desc)
         num += 1
-      
+
+def getMin(params, row_list):
+    l = []
+    for p in params:
+        l.append(int(getParam(p, row_list)))
+        
+    return min(l)
+
+def getMax(params, row_list):
+    l = []
+    for p in params:
+        l.append(int(getParam(p, row_list)))
+        
+    return max(l)
+
+def getAvg(params, row_list):
+    l = []
+    for p in params:
+        l.append(int(getParam(p, row_list)))
+        
+    return float(sum(l))/len(l)
+
+
+def getParam(p, row_list):
+    if p[0] == '\\':
+        return row_list[int(p[1:]) - 1]
+    else:
+        return p
+    
+def generate_func(desc, row_list):
+    nullp = desc[0]
+    if nullp > 0 and randint(0, 100) < nullp:
+        return ""
+    
+    f = desc[1]
+    if f[0] == 'substr':
+        s = getParam(f[1], row_list)
+        start = int(f[2])
+        end = len(s) + 1
+        if len(f) > 3:
+            end = int(f[3])
+        if end > 0 and end < start:
+            end = start
+        return s[start - 1: end - 1]
+    elif f[0] == 'concat':
+        return getParam(f[1], row_list) + getParam(f[2], row_list)
+    elif f[0] == 'copy':
+        return getParam(f[1], row_list)
+    elif f[0] == 'replace':
+        return getParam(f[1], row_list).replace(getParam(f[2], row_list), getParam(f[3], row_list))
+    elif f[0] == 'upper':
+        return getParam(f[1], row_list).upper()
+    elif f[0] == 'lower':
+        return getParam(f[1], row_list).lower()
+    elif f[0] == 'add':
+        return str(int(getParam(f[1], row_list)) + int(getParam(f[2], row_list)))
+    elif f[0] == 'sub':
+        return str(int(getParam(f[1], row_list)) - int(getParam(f[2], row_list)))
+    elif f[0] == 'mult':
+        return str(int(getParam(f[1], row_list)) * int(getParam(f[2], row_list)))
+    elif f[0] == 'div':
+        return str(int(getParam(f[1], row_list)) / int(getParam(f[2], row_list)))
+    elif f[0] == 'mod':
+        return str(int(getParam(f[1], row_list)) % int(getParam(f[2], row_list)))
+    elif f[0] == 'min':
+        return str(getMin(f[1:], row_list))
+    elif f[0] == 'max':
+        return str(getMax(f[1:], row_list))
+    elif f[0] == 'avg':
+        return str(getAvg(f[1:], row_list))
+    else:
+        return ""
 
 def generate_csv():
     buff = ""
     for i in range(0, rows):
         last = len(descriptions)
+        row_list = []
         j = 1
+        has_func = False
         for desc in descriptions:
             datatype = desc[0]
             nullp = desc[1]
-            if nullp > 0 and randint(0, 100) < nullp:
-                buff += nullstr
+            if datatype == 'func':
+                has_func = True
+                row_list.append("")
+            elif nullp > 0 and randint(0, 100) < nullp:
+                row_list.append(nullstr)
             elif datatype == 'row_number':
-                buff += desc[3] + str(gen_rownumber(desc[2], i))
+                row_list.append(desc[3] + str(gen_rownumber(desc[2], i)))
             elif datatype == 'boolean':
-                buff += gen_bool()
+                row_list.append(gen_bool())
             elif datatype == 'uuid':
-                buff += str(gen_uuid())
+                row_list.append(str(gen_uuid()))
             elif datatype == 'ip_address':
-                buff += str(gen_ipaddress())
+                row_list.append(str(gen_ipaddress()))
             elif datatype == 'regex':
-                buff += gen_regex(desc[2])
+                row_list.append(gen_regex(desc[2]))
             elif datatype == 'fixed':
-                buff += desc[2]
+                row_list.append(desc[2])
             elif datatype == 'word':
                 uv = desc[4]
                 if uv > 0:
                     wlist = userlists[j - 1]
                     if len(wlist) < uv:
                         newword = gen_word(desc[2], desc[3])
+                        while newword in wlist:
+                            newword = gen_word(desc[2], desc[3])
                         wlist.append(newword)
-                        buff += newword
+                        row_list.append(newword)
                     else:
-                        buff += gen_from_user_list(j - 1)
+                        row_list.append(gen_from_user_list(j - 1))
                 else: 
-                    buff += gen_word(desc[2], desc[3])
+                    row_list.append(gen_word(desc[2], desc[3]))
             elif datatype == 'number':
-                buff += str(gen_number(desc[2], desc[3], desc[4]))
+                row_list.append(str(gen_number(desc[2], desc[3], desc[4])))
             elif datatype == 'date':
-                buff += gen_date(desc[2], desc[3], desc[4])
+                row_list.append(gen_date(desc[2], desc[3], desc[4]))
             elif datatype == 'list':
-                buff += gen_from_user_list(j - 1)
+                row_list.append(gen_from_user_list(j - 1))
             else:
                 uv = desc[3]
-                buff += gen_from_list(datatype, desc[2], uv)
+                row_list.append(gen_from_list(datatype, desc[2], uv))
                 desc[3] = uv + 1
-            if j < last:
-                buff += delimiter
             j += 1
         
+        if has_func == False:
+            for i in range(0, last):
+                buff += row_list[i]
+                if i < last - 1:
+                    buff += delimiter
+        else:
+            for i in range(0, last):
+                if descriptions[i][0] == 'func':
+                    buff += generate_func(descriptions[i][1:], row_list)
+                else:
+                    buff += row_list[i]
+                if i < last - 1:
+                    buff += delimiter
         buff += '\n'
+        
         if len(buff) > max_buff_size:
             sys.stdout.write(buff)
             buff = ""
