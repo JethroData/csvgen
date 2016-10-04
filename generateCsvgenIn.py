@@ -70,7 +70,7 @@ def  writeNumericInput(outfile, nullp, distinct):
 def  writeTimestampInput(outfile, nullp, distinct):
     dateend = datetime.now().strftime("%Y-%m-%d")
     datestart = (datetime.now() - timedelta(days=distinct)).strftime("%Y-%m-%d")
-    line = 'date "' + datestart + '" "' + dateend + '"'
+    line = 'date "' + datestart + '" "' + dateend + '" "%Y-%m-%d"' 
     if nullp > 0:
         line += ' ' + str(nullp)
     outfile.write(line + "\n")
@@ -110,14 +110,16 @@ def main(argv):
         sys.stderr.write('generateCsvgenIn.py [-d output directory] <table name> <statistics file>')
         sys.exit(2)  
     
+    if len(args) < 2:
+        sys.stderr.write('generateCsvgenIn.py [-d output directory] <table name> <statistics file>')
+        sys.exit(2)
+        
     outfilename = args[0] + ".in"
     for opt, arg in opts:
         if opt == '-d':
             outfilename = arg + '/' + outfilename
     
-    if len(args) < 2:
-        sys.stderr.write('generateCsvgenIn.py <table name> <statistics file>')
-        sys.exit(2)
+    
     
     try:    
         statsfile = open(args[1], "r")
