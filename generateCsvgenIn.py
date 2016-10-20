@@ -74,8 +74,22 @@ def  writeTimestampInput(outfile, nullp, distinct):
     if nullp > 0:
         line += ' ' + str(nullp)
     outfile.write(line + "\n")
-     
-def generateInputFile(table, stats, outfilename):
+    
+def writeHeaders(ddlfile, descfile, table, delimiter, nullstr):
+    ddlfile.write('create table ' + table)
+    ddlfile.write('\n(\n')
+    
+    descfile.write('table ' + table + '\n')
+    descfile.write('row format delimited\n')
+    descfile.write("\tfields terminated by '" + delimiter + "'\n")
+    descfile.write("\tnull defined as '" + nullstr + "'\n")  
+    descfile.write('(\n')
+    
+def writeFooters(ddlfile, descfile):
+    ddlfile.write(');')
+    descfile.write(')')
+    
+def generateInputFile(table, stats, outdir, delim, nullstr):
     number_of_rows = getRows(table, stats)
     if number_of_rows == 0:
         sys.stderr.write('Table ' + table + ' does not exist.')
@@ -83,42 +97,78 @@ def generateInputFile(table, stats, outfilename):
     
     columns = getColumns(table, stats)
     
+    infilename = outdir + '/' + table + '.in'
+    ddlfilename = outdir + '/' + table + '.ddl'
+    descfilename = outdir + '/' + table + '.desc'
     try:    
-        outfile = open(outfilename, 'w')
+        infile = open(infilename, 'w')
+        ddlfile = open(ddlfilename, 'w')
+        descfile = open(descfilename, 'w')
+        
     except IOError:
         print("Failed to open output file ")
         exit(-1)
         
+    writeHeaders(ddlfile, descfile, table, delim, nullstr)
+    
+    i = 0
     for c in columns:
+        ddlfile.write(c[0] + ' ' + c[1])
+        descfile.write(c[0])
         nullp = int(c[2] / number_of_rows * 100)
         if c[3] == number_of_rows:
-            writePkey(outfile, c[1])
+            writePkey(infile, c[1])
         elif c[1] == 'STRING':
-            writeStringInput(outfile, nullp, c[3])
+            writeStringInput(infile, nullp, c[3])
         elif c[1] == 'INTEGER' or c[1] == 'BIGINT' or c[1] == 'FLOAT' or c[1] == 'DOUBLE':
-            writeNumericInput(outfile, nullp, c[3])
+            writeNumericInput(infile, nullp, c[3])
         elif c[1] == 'TIMESTAMP':
-            writeTimestampInput(outfile, nullp, c[3])
+            writeTimestampInput(infile, nullp, c[3])
+            descfile.write(" format='yyyy-MM-dd'")
+        
+        i += 1
+        if i < len(columns):
+            ddlfile.write(',')
+            descfile.write(',')
+        
+        ddlfile.write('\n')
+        descfile.write('\n')
     
-    outfile.close()
-    print("Saved output file to " + outfilename)
+    writeFooters(ddlfile, descfile)
+        
+    infile.close()
+    ddlfile.close()
+    descfile.close()
+    print("Saved output to " + infilename + ', ' + ddlfilename + ', ' + descfilename)
            
 def main(argv):
     try:
-        opts, args = getopt.getopt(argv,"d:")
+        opts, args = getopt.getopt(argv,"o:d:n:")
     except getopt.GetoptError:
-        sys.stderr.write('generateCsvgenIn.py [-d output directory] <table name> <statistics file>')
+        sys.stderr.write('generateCsvgenIn.py [-o <output directory>] [-d <delimiter character>] [-n <null string> <table name> <statistics file>')
         sys.exit(2)  
     
     if len(args) < 2:
-        sys.stderr.write('generateCsvgenIn.py [-d output directory] <table name> <statistics file>')
+        sys.stderr.write('generateCsvgenIn.py [-o <output directory>] [-d <delimiter character>] [-n <null string> <table name> <statistics file>')
         sys.exit(2)
         
-    outfilename = args[0] + ".in"
+    outdir = "."
+    delim = ','
+    nullstr = ''
     for opt, arg in opts:
-        if opt == '-d':
-            outfilename = arg + '/' + outfilename
-    
+        if opt == '-o':
+            outdir = arg
+        elif opt == '-d':
+            delim = arg
+            if delim.startswith('"') or delim.startswith("'"):
+                delim = delim[1:-1]
+            if len(delim) > 1 and not delim.startswith('\\'):
+                sys.stderr.write("Invalid delimiter. Must be one character.")
+                sys.exit(2)
+        elif opt == '-n':
+            nullstr = arg
+            if nullstr.startswith('"') or nullstr.startswith("'"):
+                nullstr = nullstr[1:-1]
     
     
     try:    
@@ -130,7 +180,7 @@ def main(argv):
     stats = statsfile.read()
     statsfile.close()
     
-    generateInputFile(args[0], stats, outfilename)
+    generateInputFile(args[0], stats, outdir, delim, nullstr)
     
 if __name__ == '__main__':
     main(sys.argv[1:])

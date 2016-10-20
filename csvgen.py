@@ -392,9 +392,12 @@ def main(argv):
             delimiter = arg
             if delimiter.startswith('"') or delimiter.startswith("'"):
                 delimiter = delimiter[1:-1]
+            if len(delimiter) > 1 and not delimiter.startswith('\\'):
+                sys.stderr.write("Invalid delimiter. Must be one character.")
+                sys.exit(2)
         elif opt == '-n':
             nullstr = arg
-            if delimiter.startswith('"') or delimiter.startswith("'"):
+            if nullstr.startswith('"') or nullstr.startswith("'"):
                 nullstr = nullstr[1:-1]
         elif opt == '-o':
             sys.stdout = open(arg,'w')

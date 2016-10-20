@@ -125,7 +125,7 @@ func:
 					Replaces all occurrences of old in str by new. All parameters can be either a value from a different column (\n) or a string.
 					Example: replace(\1, John, Joe)
 				
-				upper(\n), loawer(\n)
+				upper(\n), lower(\n)
 					Converts all characters of a column value to upper/lower case.
 					Example: upper(\1), lower(\3)
 				
