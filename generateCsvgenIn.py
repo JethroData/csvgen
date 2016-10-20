@@ -62,7 +62,10 @@ def  writeStringInput(outfile, nullp, distinct):
     outfile.write(line + "\n")
     
 def  writeNumericInput(outfile, nullp, distinct):
-    line = 'number 1 ' + str(distinct) + ' 0 '
+    startn = 1
+    if distinct == 0:
+        startn = 0
+    line = 'number ' + str(startn) + ' ' + str(distinct) + ' 0 '
     if nullp > 0:
         line += ' ' + str(nullp)
     outfile.write(line + "\n")
