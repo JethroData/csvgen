@@ -147,7 +147,7 @@ def read_description(filename):
         nullp = 0
         if datatype in param_types:
             if len(params) < 2:
-                sys.stderr.write("Error: Type " + datatype + " must have a parameter")
+                sys.stderr.write("Error: Type " + datatype + " must have a parameter\n")
                 sys.exit(2)
             param = params[1]
             if len(params) > 2:
@@ -159,7 +159,7 @@ def read_description(filename):
             desc.append(param)
         elif datatype in range_types:
             if len(params) < 4:
-                sys.stderr.write("Error: Type " + datatype + " must have min and max parameters")
+                sys.stderr.write("Error: Type " + datatype + " must have min and max parameters\n")
                 sys.exit(2)
             minrange = int(params[1])
             maxrange = int(params[2])
@@ -178,7 +178,7 @@ def read_description(filename):
                 
         elif datatype in format_types:
             if len(params) < 4:
-                sys.stderr.write("Error: Type " + datatype + " must have 3 parameters")
+                sys.stderr.write("Error: Type " + datatype + " must have 3 parameters\n")
                 sys.exit(2)
             if len(params) > 1:
                 minrange = params[1]
@@ -209,7 +209,7 @@ def read_description(filename):
                 desc.append("")
         elif datatype == 'func':
             if len(params) < 1:
-                sys.stderr.write("Error: Missing function")
+                sys.stderr.write("Error: Missing function\n")
                 sys.exit(2)
                 
             f = parseFunc(params[1])
@@ -382,7 +382,7 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"i:d:n:o:")
     except getopt.GetoptError:
-        sys.stderr.write('csvgen.py -i <number of rows> -d <delimiter> -n <null string> -o <output file> <description file>')
+        sys.stderr.write('csvgen.py -i <number of rows> -d <delimiter> -n <null string> -o <output file> <description file>\n')
         sys.exit(2)
         
     for opt, arg in opts:
@@ -393,7 +393,7 @@ def main(argv):
             if delimiter.startswith('"') or delimiter.startswith("'"):
                 delimiter = delimiter[1:-1]
             if len(delimiter) > 1 and not delimiter.startswith('\\'):
-                sys.stderr.write("Invalid delimiter. Must be one character.")
+                sys.stderr.write("Invalid delimiter. Must be one character.\n")
                 sys.exit(2)
         elif opt == '-n':
             nullstr = arg
@@ -403,7 +403,7 @@ def main(argv):
             sys.stdout = open(arg,'w')
             
     if len(args) == 0:
-        sys.stderr.write('csvgen.py -i <number of rows> -d <delimiter> -n <null string> -o <output file> <description file>')
+        sys.stderr.write('csvgen.py -i <number of rows> -d <delimiter> -n <null string> -o <output file> <description file>\n')
         sys.exit(2)
     
     read_description(args[0])

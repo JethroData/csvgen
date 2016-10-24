@@ -95,7 +95,7 @@ def writeFooters(ddlfile, descfile):
 def generateInputFile(table, stats, outdir, delim, nullstr):
     number_of_rows = getRows(table, stats)
     if number_of_rows == 0:
-        sys.stderr.write('Table ' + table + ' does not exist.')
+        sys.stderr.write('Table ' + table + ' does not exist.\n')
         sys.exit(2)
     
     columns = getColumns(table, stats)
@@ -148,11 +148,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"o:d:n:")
     except getopt.GetoptError:
-        sys.stderr.write('generateCsvgenIn.py [-o <output directory>] [-d <delimiter character>] [-n <null string> <table name> <statistics file>')
+        sys.stderr.write('generateCsvgenIn.py [-o <output directory>] [-d <delimiter character>] [-n <null string> <table name> <statistics file>\n')
         sys.exit(2)  
     
     if len(args) < 2:
-        sys.stderr.write('generateCsvgenIn.py [-o <output directory>] [-d <delimiter character>] [-n <null string> <table name> <statistics file>')
+        sys.stderr.write('generateCsvgenIn.py [-o <output directory>] [-d <delimiter character>] [-n <null string> <table name> <statistics file>\n')
         sys.exit(2)
         
     outdir = "."
@@ -166,7 +166,7 @@ def main(argv):
             if delim.startswith('"') or delim.startswith("'"):
                 delim = delim[1:-1]
             if len(delim) > 1 and not delim.startswith('\\'):
-                sys.stderr.write("Invalid delimiter. Must be one character.")
+                sys.stderr.write("Invalid delimiter. Must be one character.\n")
                 sys.exit(2)
         elif opt == '-n':
             nullstr = arg
