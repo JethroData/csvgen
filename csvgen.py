@@ -196,7 +196,11 @@ def read_description(filename):
             else:
                 desc.append(minrange)
                 desc.append(maxrange)
-                desc.append(format)   
+                desc.append(format)
+        elif datatype in simple_types:
+            if len(params) > 1:
+                nullp = int(params[1])
+            desc.append(nullp)
         elif datatype == 'row_number':
             desc.append(nullp)
             if len(params) > 1:
