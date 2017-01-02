@@ -103,7 +103,9 @@ The following is a description of all types:
 		* End, end date, mandatory
 		* Format, the date format in an strftime format, mandatory
 		* Null %, the % of NULL values, 0-100, optional	
-	* Example: date "01-01-2012 00:00:00" "12-31-2012 23:59:59" "%m-%d-%Y %H:%M:%S" 30, date "05-27-2014" "06-31-2014" "%m-%d-%Y" 25
+	* Example: 
+	date "01-01-2012 00:00:00" "12-31-2012 23:59:59" "%m-%d-%Y %H:%M:%S" 30, 
+	date "05-27-2014" "06-31-2014" "%m-%d-%Y" 25
 				 
 * fixed:
 	* Description: Generates a string provided as parameter
@@ -118,7 +120,7 @@ The following is a description of all types:
 		* List, list of values separated by a space enclosed by “[ ]” mandatory
 		* Null %, the % of NULL values, 0-100, optional	
 	* Example: list “[dog cat mouse]” 20
-			**Note that you must enclose the list with quotes.**
+	**Note that you must enclose the list with quotes.**
 				 
 * func:
 	* Description: Generates a value by executing a function on other generated values. The function should be sorounded by double quotes. The other values are passed as parameters in the form '\n' where n is the column number starting at 1.
