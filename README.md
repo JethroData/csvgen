@@ -153,7 +153,7 @@ The following is a description of all types:
 					Calculates the minimum, maximum and average of the numeric parameters. The parameters can be either a value from a different column (\n) or a number.
 					Example: min(\1, \2, \3), max(\3, 10), avg(\2, \3, 7)
 					
-	* Parameter:  
+	* Parameters:  
 		* Function, The function to execute sorrounded by '"', mandatory.
 		* Null %, the % of NULL values, 0-100, optional
 	* Example: func "substr(\2, 3, 5)", func "add(\1, 2)" 25
