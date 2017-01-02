@@ -5,45 +5,51 @@ csvgen generates csv files containing mock data that can be used to load as data
 Prerequisites:
 Python 2.6 or higher installed.
 
-Install:
-Download the rstr python package from https://pypi.python.org/pypi/rstr/2.1.3
-Unzip rstr 
-Open a command line. Go to the rstr-2.1.3 directory and run the following:
-Linux (as root user): python setup.py install
-Windows: setup.py install
+###Install
+
+Download the rstr python package from https://pypi.python.org/pypi/rstr. This package enables data based on regular expressions.
+Unzip the downloaded rstr package. 
+Open a command line. Go to the rstr root directory directory and run the following:
+Linux (as root user): 
+	`python setup.py install`
+Windows: 
+	`setup.py install`
+	
 Unzip the csvgen.zip into some directory.
 
 
-Run:
+###Run
+
 From the command line, run the command:
-Linux: python csvgen.py <parameters>
-Windows: csvgen.py <parameters>
+Linux: 
+	`python csvgen.py <parameters>`
+Windows: 
+	`csvgen.py <parameters>`
 
 It accepts the following command line parameters:
 
--i number-of-rows -d delimiter -n null-string -o output-file description-file
+`-i number-of-rows -d delimiter -n null-string -o output-file description-file`
 
 Where:
-number-of-rows - Number of rows to generate. Default = 1
+* number-of-rows - Number of rows to generate. Default = 1
 
-delimiter - The delimiter to use. Default = ‘,’
+* delimiter - The delimiter to use. Default = ‘,’
 
-null-string - The string to use for NULL. Default = “” (empty string)
+* null-string - The string to use for NULL. Default = “” (empty string)
 
-output-file - The full path of the output file. Default is standard output.
+* output-file - The full path of the output file. Default is standard output.
 
-description-file - The full path of the description file.
+* description-file - The full path of the description file.
 
 The description file describes the data to generate. Every line represents a different column.
 Every line starts with a type and then may have specific parameters.
 
 The following is a description of all types:
 
-Row_number:
-	Description: Generates a unique row number for each row, starting at 1 or at the number provided as parameter
-	Parameters:  Start from, the number to start from, optional
-				 Prefix, the prefix to prepend to the number, optional
-	Example:     row_number 1000
+Type | Description | Parameters | Examples
+---- | ----------- | ---------- | --------
+Row_number | Generates a unique row number for each row, starting at 1 or at the number provided as parameter | <ul><li>Start from, the number to start from, optional</li><li>Prefix, the prefix to prepend to the number, optional</li></ul> | row_number 1000
+
 	
 boolean:
 	Description: Generates a Boolean value, true or false
