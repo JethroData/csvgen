@@ -120,7 +120,7 @@ The following is a description of all types:
 	* Example: list “[dog cat mouse]” 20
 			**Note that you must enclose the list with quotes.**
 				 
-*func:
+* func:
 	* Description: Generates a value by executing a function on other generated values. The function should be sorounded by double quotes. 
 				 The other values are passed as parameters in the form '\n' where n is the column number starting at 1.
 				 The following functions are supported:
