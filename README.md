@@ -47,7 +47,7 @@ Every line starts with a type and then may have specific parameters.
 The following is a description of all types:
 
 Type | Description | Parameters | Examples
----- | :---------------------------------------: | ---------- | --------
+---- | ----------- | ---------- | --------
 row_number | Generates a unique row number for each row, starting at 1 or at the number provided as parameter | <ul><li>Start from - the number to start from, optional</li><li>Prefix - the prefix to prepend to the number, optional</li></ul> | row_number 1000
 boolean | Generates a Boolean value, true or false |<ul><li>Null % - the % of NULL values, 0-100, optional</li></ul> | boolean 20
 uuid | Generates a unique uuid | <ul><li>Null % - the % of NULL values, 0-100, optional</li></ul> | uuid 10
