@@ -10,8 +10,6 @@ import struct
 import sys, getopt
 import shlex
 import rstr
-from setuptools.package_index import unique_values
-
 
 
 datalists = {}
